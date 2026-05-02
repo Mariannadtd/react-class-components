@@ -4,6 +4,7 @@ export interface CharacterApiItem {
   status: string;
   species: string;
   gender: string;
+  image: string;
   origin: {
     name: string;
   };
@@ -17,4 +18,5 @@ export interface CharacterCard {
   id: number;
   name: string;
   description: string;
+  image: string;
 }

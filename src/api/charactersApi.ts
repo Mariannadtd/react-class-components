@@ -15,6 +15,7 @@ const mapCharacter = (character: CharacterApiItem): CharacterCard => ({
   id: character.id,
   name: character.name,
   description: `${character.species}, ${character.status}, ${character.gender}. Origin: ${character.origin.name}`,
+  image: character.image,
 });
 
 export async function fetchCharacters(
