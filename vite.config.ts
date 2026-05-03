@@ -3,5 +3,5 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/mariannadtd-REACT2026Q2/",
+  base: "/react-class-components/",
 });

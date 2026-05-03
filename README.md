@@ -1,73 +1,47 @@
-# React + TypeScript + Vite
+# React Class Components Search App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React project setup task for RS School React 2026 Q2.
 
-Currently, two official plugins are available:
+## Deploy
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Personal GitHub Pages:
 
-## React Compiler
+https://mariannadtd.github.io/react-class-components/
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+RS School GitHub Pages:
 
-## Expanding the ESLint configuration
+https://rolling-scopes-school.github.io/mariannadtd-REACT2026Q2/
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Pull Requests
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Personal repository PR:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+https://github.com/Mariannadtd/react-class-components/pull/1
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+RS School repository PR:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+https://github.com/rolling-scopes-school/mariannadtd-REACT2026Q2/pull/1
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Features
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Application layout with separate search and results sections
+- Search input with localStorage persistence
+- Initial data loading on application start
+- REST API request with search and first-page pagination
+- Loading indicator during API requests
+- Human-readable error message for failed requests
+- Error Boundary with fallback UI
+- Test button for simulating application errors
+- Character cards with name, description, and image
+
+## API
+
+The application uses Rick and Morty API:
+
+https://rickandmortyapi.com/api/character/
+
+Example request:
+
+```txt
+https://rickandmortyapi.com/api/character/?page=1&name=morty
 ```
