@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { Card } from "./Card";
+import { MemoryRouter } from "react-router-dom";
 
 const character = {
   id: 1,
@@ -11,7 +12,11 @@ const character = {
 
 describe("Card", () => {
   it("renders character content", () => {
-    render(<Card item={character} />);
+    render(
+      <MemoryRouter>
+        <Card item={character} />
+      </MemoryRouter>,
+    );
 
     const image = screen.getByRole("img", { name: /rick sanchez/i });
 
@@ -23,5 +28,10 @@ describe("Card", () => {
     ).toBeInTheDocument();
 
     expect(screen.getByText(character.description)).toBeInTheDocument();
+
+    expect(screen.getByRole("link", { name: /rick sanchez/i })).toHaveAttribute(
+      "href",
+      "/details/1",
+    );
   });
 });

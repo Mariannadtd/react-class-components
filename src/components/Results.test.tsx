@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { Results } from "./Results";
 
@@ -28,11 +29,13 @@ describe("Results", () => {
 
   it("shows no results message when items list is empty", () => {
     render(<Results items={[]} isLoading={false} errorMessage="" />);
+
     expect(screen.getByText(/no results found/i)).toBeInTheDocument();
   });
 
   it("shows loader when loading", () => {
     render(<Results items={[]} isLoading={true} errorMessage="" />);
+
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
 
@@ -51,36 +54,12 @@ describe("Results", () => {
   });
 
   it("renders character cards when items are provided", () => {
-    render(<Results items={characters} isLoading={false} errorMessage="" />);
-    expect(
-      screen.getByRole("heading", { name: /rick sanchez/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: /morty smith/i }),
-    ).toBeInTheDocument();
-    expect(screen.getAllByRole("listitem")).toHaveLength(2);
-  });
-
-  it("shows loader when loading", () => {
-    render(<Results items={[]} isLoading={true} errorMessage="" />);
-    expect(screen.getByText(/loading/i)).toBeInTheDocument();
-  });
-
-  it("shows error message when errorMessage is provided", () => {
     render(
-      <Results
-        items={[]}
-        isLoading={false}
-        errorMessage="Request failed with status 500"
-      />,
+      <MemoryRouter>
+        <Results items={characters} isLoading={false} errorMessage="" />
+      </MemoryRouter>,
     );
-    expect(
-      screen.getByText(/request failed with status 500/i),
-    ).toBeInTheDocument();
-  });
 
-  it("renders character cards when items are provided", () => {
-    render(<Results items={characters} isLoading={false} errorMessage="" />);
     expect(
       screen.getByRole("heading", { name: /rick sanchez/i }),
     ).toBeInTheDocument();

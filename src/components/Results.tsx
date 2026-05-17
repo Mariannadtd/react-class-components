@@ -1,7 +1,6 @@
-import { Component } from "react";
 import type { CharacterCard } from "../types/character";
 import { Card } from "./Card";
-import { Loader } from "./Loader";
+import { Loader } from "../ui/Loader";
 
 interface ResultsProps {
   items: CharacterCard[];
@@ -9,35 +8,37 @@ interface ResultsProps {
   errorMessage: string;
 }
 
-export class Results extends Component<ResultsProps> {
-  renderContent(): React.ReactNode {
-    if (this.props.isLoading) {
+export function Results({
+  items,
+  isLoading,
+  errorMessage,
+}: ResultsProps): React.ReactNode {
+  const renderContent = (): React.ReactNode => {
+    if (isLoading) {
       return <Loader />;
     }
 
-    if (this.props.errorMessage.length > 0) {
-      return <p className="message error-message">{this.props.errorMessage}</p>;
+    if (errorMessage.length > 0) {
+      return <p className="message error-message">{errorMessage}</p>;
     }
 
-    if (this.props.items.length === 0) {
+    if (items.length === 0) {
       return <p className="message">No results found.</p>;
     }
 
     return (
       <ul className="card-list">
-        {this.props.items.map((item) => (
+        {items.map((item) => (
           <Card key={item.id} item={item} />
         ))}
       </ul>
     );
-  }
+  };
 
-  render(): React.ReactNode {
-    return (
-      <>
-        <h2>Results</h2>
-        {this.renderContent()}
-      </>
-    );
-  }
+  return (
+    <>
+      <h2>Results</h2>
+      {renderContent()}
+    </>
+  );
 }
