@@ -9,7 +9,13 @@ describe("Search", () => {
   });
 
   it("renders search input and button", () => {
-    render(<Search onInitialSearch={vi.fn()} onSearch={vi.fn()} />);
+    render(
+      <Search
+        onInitialSearch={vi.fn()}
+        onSearchTermChange={vi.fn()}
+        onSearch={vi.fn()}
+      />,
+    );
     expect(
       screen.getByRole("searchbox", { name: /search character/i }),
     ).toBeInTheDocument();
@@ -17,7 +23,13 @@ describe("Search", () => {
   });
 
   it("empty input when localStorage is empty", () => {
-    render(<Search onInitialSearch={vi.fn()} onSearch={vi.fn()} />);
+    render(
+      <Search
+        onInitialSearch={vi.fn()}
+        onSearchTermChange={vi.fn()}
+        onSearch={vi.fn()}
+      />,
+    );
     expect(
       screen.getByRole("searchbox", { name: /search character/i }),
     ).toHaveValue("");
@@ -25,7 +37,13 @@ describe("Search", () => {
 
   it("shows saved search term from localStorage", () => {
     localStorage.setItem("searchTerm", "Rick");
-    render(<Search onInitialSearch={vi.fn()} onSearch={vi.fn()} />);
+    render(
+      <Search
+        onInitialSearch={vi.fn()}
+        onSearchTermChange={vi.fn()}
+        onSearch={vi.fn()}
+      />,
+    );
     expect(
       screen.getByRole("searchbox", { name: /search character/i }),
     ).toHaveValue("Rick");
@@ -33,7 +51,13 @@ describe("Search", () => {
 
   it("updates input value when user types", async () => {
     const user = userEvent.setup();
-    render(<Search onInitialSearch={vi.fn()} onSearch={vi.fn()} />);
+    render(
+      <Search
+        onInitialSearch={vi.fn()}
+        onSearchTermChange={vi.fn()}
+        onSearch={vi.fn()}
+      />,
+    );
     const input = screen.getByRole("searchbox", {
       name: /search character/i,
     });
@@ -44,7 +68,13 @@ describe("Search", () => {
   it("calls onSearch with trimmed value when form is submitted", async () => {
     const user = userEvent.setup();
     const onSearch = vi.fn();
-    render(<Search onInitialSearch={vi.fn()} onSearch={onSearch} />);
+    render(
+      <Search
+        onInitialSearch={vi.fn()}
+        onSearchTermChange={vi.fn()}
+        onSearch={onSearch}
+      />,
+    );
     const input = screen.getByRole("searchbox", {
       name: /search character/i,
     });
@@ -54,23 +84,33 @@ describe("Search", () => {
     expect(input).toHaveValue("Morty");
   });
 
-  it("calls onSearch with trimmed value when form is submitted", async () => {
+  it("calls onSearchTermChange when user types", async () => {
     const user = userEvent.setup();
-    const onSearch = vi.fn();
-    render(<Search onInitialSearch={vi.fn()} onSearch={onSearch} />);
+    const onSearchTermChange = vi.fn();
+    render(
+      <Search
+        onInitialSearch={vi.fn()}
+        onSearchTermChange={onSearchTermChange}
+        onSearch={vi.fn()}
+      />,
+    );
     const input = screen.getByRole("searchbox", {
       name: /search character/i,
     });
-    await user.type(input, "  Morty  ");
-    await user.click(screen.getByRole("button", { name: /search/i }));
-    expect(onSearch).toHaveBeenCalledWith("Morty");
-    expect(input).toHaveValue("Morty");
+    await user.type(input, "M");
+    expect(onSearchTermChange).toHaveBeenCalled();
   });
 
   it("calls onInitialSearch with trimmed saved search term", () => {
     localStorage.setItem("searchTerm", "  Rick  ");
     const onInitialSearch = vi.fn();
-    render(<Search onInitialSearch={onInitialSearch} onSearch={vi.fn()} />);
+    render(
+      <Search
+        onInitialSearch={onInitialSearch}
+        onSearchTermChange={vi.fn()}
+        onSearch={vi.fn()}
+      />,
+    );
     expect(onInitialSearch).toHaveBeenCalledWith("Rick");
   });
 });

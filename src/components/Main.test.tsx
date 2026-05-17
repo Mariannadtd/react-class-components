@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { Main } from "./Main";
 import type { CharacterCard } from "../types/character";
+import { MemoryRouter } from "react-router-dom";
 
 const character: CharacterCard = {
   id: 1,
@@ -13,13 +14,19 @@ const character: CharacterCard = {
 describe("Main", () => {
   it("renders provided character cards", () => {
     render(
-      <Main
-        items={[character]}
-        isLoading={false}
-        errorMessage=""
-        onInitialSearch={vi.fn()}
-        onSearch={vi.fn()}
-      />,
+      <MemoryRouter>
+        <Main
+          items={[character]}
+          isLoading={false}
+          errorMessage=""
+          onInitialSearch={vi.fn()}
+          onSearchTermChange={vi.fn()}
+          onSearch={vi.fn()}
+          currentPage={1}
+          totalPages={1}
+          onPageChange={vi.fn()}
+        />
+      </MemoryRouter>,
     );
 
     expect(

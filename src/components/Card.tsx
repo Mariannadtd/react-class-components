@@ -1,25 +1,23 @@
-import { Component } from "react";
+import { Link, useLocation } from "react-router-dom";
 import type { CharacterCard } from "../types/character";
 
 interface CardProps {
   item: CharacterCard;
 }
 
-export class Card extends Component<CardProps> {
-  render(): React.ReactNode {
-    return (
-      <li className="card">
-        <img
-          className="card__image"
-          src={this.props.item.image}
-          alt={this.props.item.name}
-        />
+export function Card({ item }: CardProps): React.ReactNode {
+  const location = useLocation();
+
+  return (
+    <li className="card">
+      <Link className="card__link" to={`/details/${item.id}${location.search}`}>
+        <img className="card__image" src={item.image} alt={item.name} />
 
         <div className="card__content">
-          <h3>{this.props.item.name}</h3>
-          <p>{this.props.item.description}</p>
+          <h3>{item.name}</h3>
+          <p>{item.description}</p>
         </div>
-      </li>
-    );
-  }
+      </Link>
+    </li>
+  );
 }
