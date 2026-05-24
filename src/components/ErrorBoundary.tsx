@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
+import { Button } from "../ui/Button";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -38,9 +39,9 @@ export class ErrorBoundary extends Component<
         <section className="error-boundary">
           <h2>Something went wrong</h2>
           <p>The application caught an unexpected error.</p>
-          <button type="button" onClick={this.handleReset}>
+          <Button onClick={this.handleReset}>
             Try again
-          </button>
+          </Button>
         </section>
       );
     }

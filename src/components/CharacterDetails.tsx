@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { fetchCharacterDetails } from "../api/charactersApi";
 import type { CharacterDetailsData } from "../types/character";
+import { Button } from "../ui/Button";
 import { Loader } from "../ui/Loader";
 
 export function CharacterDetails(): React.ReactNode {
@@ -102,16 +103,27 @@ export function CharacterDetails(): React.ReactNode {
   };
 
   return (
-    <aside className="details-panel" aria-label="Character details">
-      <button
-        className="details-panel__close"
-        type="button"
-        aria-label="Close details"
-        onClick={handleClose}
+    <section
+      className="details-panel-backdrop"
+      aria-label="Details backdrop"
+      onClick={handleClose}
+    >
+      <aside
+        className="details-panel"
+        aria-label="Character details"
+        onClick={(event) => {
+          event.stopPropagation();
+        }}
       >
-        x
-      </button>
-      {renderContent()}
-    </aside>
+        <Button
+          className="details-panel__close"
+          aria-label="Close details"
+          onClick={handleClose}
+        >
+          x
+        </Button>
+        {renderContent()}
+      </aside>
+    </section>
   );
 }

@@ -1,5 +1,6 @@
 import { type ChangeEvent, type FormEvent, useEffect, useRef } from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import { Button } from "../ui/Button";
 
 interface SearchProps {
   onInitialSearch: (searchTerm: string) => void;
@@ -48,7 +49,7 @@ export function Search({
         aria-label="Search character"
       />
 
-      <button type="submit">Search</button>
+      <Button type="submit">Search</Button>
     </form>
   );
 }
