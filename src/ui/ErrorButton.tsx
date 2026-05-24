@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button } from "./Button";
 
 export function ErrorButton(): React.ReactNode {
   const [hasError, setHasError] = useState(false);
@@ -8,14 +9,13 @@ export function ErrorButton(): React.ReactNode {
   }
 
   return (
-    <button
+    <Button
       className="error-button"
-      type="button"
       onClick={() => {
         setHasError(true);
       }}
     >
       Throw error
-    </button>
+    </Button>
   );
 }

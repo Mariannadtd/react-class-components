@@ -1,3 +1,5 @@
+import { Button } from "../ui/Button";
+
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
@@ -18,16 +20,15 @@ export function Pagination({
   return (
     <nav className="pagination" aria-label="Pagination">
       {pages.map((page) => (
-        <button
+        <Button
           key={page}
-          type="button"
-          className={page === currentPage ? "active" : ""}
+          isActive={page === currentPage}
           onClick={() => {
             onPageChange(page);
           }}
         >
           {page}
-        </button>
+        </Button>
       ))}
     </nav>
   );

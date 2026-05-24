@@ -68,4 +68,16 @@ describe("CharacterDetails", () => {
 
     expect(await screen.findByText(/home route/i)).toBeInTheDocument();
   });
+
+  it("closes details panel when backdrop is clicked", async () => {
+    const user = userEvent.setup();
+    vi.mocked(fetchCharacterDetails).mockResolvedValue(characterDetails);
+
+    renderDetailsRoute();
+
+    await screen.findByRole("heading", { name: /rick sanchez/i });
+    await user.click(screen.getByRole("region", { name: /details backdrop/i }));
+
+    expect(await screen.findByText(/home route/i)).toBeInTheDocument();
+  });
 });
