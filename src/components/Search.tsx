@@ -1,60 +1,55 @@
-import { Component, type ChangeEvent, type FormEvent } from "react";
+import { type ChangeEvent, type FormEvent, useEffect, useRef } from "react";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import { Button } from "../ui/Button";
 
 interface SearchProps {
   onInitialSearch: (searchTerm: string) => void;
+  onSearchTermChange: () => void;
   onSearch: (searchTerm: string) => void;
 }
 
-interface SearchState {
-  searchTerm: string;
-}
+export function Search({
+  onInitialSearch,
+  onSearchTermChange,
+  onSearch,
+}: SearchProps): React.ReactNode {
+  const [searchTerm, setSearchTerm] = useLocalStorage("searchTerm", "");
+  const hasInitialSearchRun = useRef(false);
 
-export class Search extends Component<SearchProps, SearchState> {
-  state: SearchState = {
-    searchTerm: "",
+  useEffect(() => {
+    if (hasInitialSearchRun.current) {
+      return;
+    }
+
+    onInitialSearch(searchTerm.trim());
+    hasInitialSearchRun.current = true;
+  }, [onInitialSearch, searchTerm]);
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    setSearchTerm(event.target.value);
+    onSearchTermChange();
   };
 
-  componentDidMount(): void {
-    const savedSearchTerm = localStorage.getItem("searchTerm") ?? "";
-
-    this.setState({
-      searchTerm: savedSearchTerm,
-    });
-
-    this.props.onInitialSearch(savedSearchTerm.trim());
-  }
-
-  handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    this.setState({
-      searchTerm: event.target.value,
-    });
-  };
-
-  handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
-    const trimmedSearchTerm = this.state.searchTerm.trim();
+    const trimmedSearchTerm = searchTerm.trim();
 
-    this.setState({
-      searchTerm: trimmedSearchTerm,
-    });
-
-    this.props.onSearch(trimmedSearchTerm);
+    setSearchTerm(trimmedSearchTerm);
+    onSearch(trimmedSearchTerm);
   };
 
-  render(): React.ReactNode {
-    return (
-      <form className="search-form" onSubmit={this.handleSubmit}>
-        <input
-          type="search"
-          value={this.state.searchTerm}
-          onChange={this.handleChange}
-          placeholder="Enter character name"
-          aria-label="Search character"
-        />
+  return (
+    <form className="search-form" onSubmit={handleSubmit}>
+      <input
+        type="search"
+        value={searchTerm}
+        onChange={handleChange}
+        placeholder="Enter character name"
+        aria-label="Search character"
+      />
 
-        <button type="submit">Search</button>
-      </form>
-    );
-  }
+      <Button type="submit">Search</Button>
+    </form>
+  );
 }
