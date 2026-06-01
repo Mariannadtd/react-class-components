@@ -1,19 +1,28 @@
 import { Outlet, useMatch, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { fetchCharacters } from "../api/charactersApi";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  charactersQueryKeys,
+  useCharactersQuery,
+} from "../api/charactersQueries";
 import { Main } from "../components/Main";
-import type { CharacterCard } from "../types/character";
+
+const SEARCH_TERM_STORAGE_KEY = "searchTerm";
+
+const getSavedSearchTerm = (): string =>
+  localStorage.getItem(SEARCH_TERM_STORAGE_KEY)?.trim() ?? "";
 
 export function HomePage(): React.ReactNode {
-  const [items, setItems] = useState<CharacterCard[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [currentSearchTerm, setCurrentSearchTerm] = useState("");
-  const [totalPages, setTotalPages] = useState(0);
+  const [currentSearchTerm, setCurrentSearchTerm] = useState(
+    getSavedSearchTerm,
+  );
   const [searchParams, setSearchParams] = useSearchParams();
   const detailsMatch = useMatch("/details/:detailsId");
   const pageParam = searchParams.get("page");
   const currentPage = pageParam === null ? 1 : Number(pageParam);
+  const queryClient = useQueryClient();
+
+  const charactersQuery = useCharactersQuery(currentSearchTerm, currentPage);
 
   useEffect(() => {
     if (pageParam === null) {
@@ -21,35 +30,8 @@ export function HomePage(): React.ReactNode {
     }
   }, [pageParam, setSearchParams]);
 
-  const loadCharacters = async (
-    searchTerm: string,
-    page: number,
-  ): Promise<void> => {
-    setIsLoading(true);
-    setErrorMessage("");
-
-    try {
-      const result = await fetchCharacters(searchTerm, page);
-
-      setItems(result.items);
-      setTotalPages(result.totalPages);
-      setIsLoading(false);
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Unknown error occurred while loading data";
-
-      setItems([]);
-      setIsLoading(false);
-      setErrorMessage(message);
-      setTotalPages(0);
-    }
-  };
-
   const handleInitialSearch = (searchTerm: string): void => {
     setCurrentSearchTerm(searchTerm);
-    void loadCharacters(searchTerm, currentPage);
   };
 
   const handleSearch = (searchTerm: string): void => {
@@ -61,7 +43,6 @@ export function HomePage(): React.ReactNode {
 
     setCurrentSearchTerm(trimmedSearchTerm);
     setSearchParams({ page: "1" });
-    void loadCharacters(trimmedSearchTerm, 1);
   };
 
   const handleSearchTermChange = (): void => {
@@ -74,8 +55,16 @@ export function HomePage(): React.ReactNode {
     setSearchParams({
       page: page.toString(),
     });
-    void loadCharacters(currentSearchTerm, page);
   };
+
+  const handleRefresh = (): void => {
+    void queryClient.invalidateQueries({
+      queryKey: charactersQueryKeys.list(currentSearchTerm, currentPage),
+    });
+  };
+
+  const errorMessage =
+    charactersQuery.error instanceof Error ? charactersQuery.error.message : "";
 
   return (
     <div
@@ -85,15 +74,17 @@ export function HomePage(): React.ReactNode {
     >
       <div className="master-panel">
         <Main
-          items={items}
-          isLoading={isLoading}
+          items={charactersQuery.data?.items ?? []}
+          isLoading={charactersQuery.isLoading}
+          isRefreshing={charactersQuery.isFetching}
           errorMessage={errorMessage}
           onInitialSearch={handleInitialSearch}
           onSearchTermChange={handleSearchTermChange}
           onSearch={handleSearch}
           currentPage={currentPage}
-          totalPages={totalPages}
+          totalPages={charactersQuery.data?.totalPages ?? 0}
           onPageChange={handlePageChange}
+          onRefresh={handleRefresh}
         />
       </div>
       <Outlet />

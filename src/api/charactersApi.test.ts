@@ -71,7 +71,7 @@ describe("fetchCharacters", () => {
     } as Response);
     vi.stubGlobal("fetch", fetchMock);
     await expect(fetchCharacters("Rick", 1)).rejects.toThrow(
-      "Request failed with status 500",
+      "Unable to load characters. Please try again.",
     );
   });
 
@@ -110,6 +110,32 @@ describe("fetchCharacters", () => {
     });
     expect(fetchMock).toHaveBeenCalledWith(
       "https://rickandmortyapi.com/api/character/1",
+    );
+  });
+
+  it("throws readable error when character details are not found", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+    } as Response);
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(fetchCharacterDetails(999999)).rejects.toThrow(
+      "Character not found.",
+    );
+  });
+
+  it("throws readable error when character details request fails", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 500,
+    } as Response);
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(fetchCharacterDetails(1)).rejects.toThrow(
+      "Unable to load character details. Please try again.",
     );
   });
 });

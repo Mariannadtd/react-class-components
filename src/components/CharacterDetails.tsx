@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { fetchCharacterDetails } from "../api/charactersApi";
-import type { CharacterDetailsData } from "../types/character";
+import {
+  charactersQueryKeys,
+  useCharacterDetailsQuery,
+} from "../api/charactersQueries";
 import { Button } from "../ui/Button";
 import { Loader } from "../ui/Loader";
 
@@ -11,42 +13,9 @@ export function CharacterDetails(): React.ReactNode {
   const hasValidId = Number.isInteger(detailsIdNumber) && detailsIdNumber > 0;
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [character, setCharacter] = useState<CharacterDetailsData | null>(
-    null,
-  );
-  const [isLoading, setIsLoading] = useState(hasValidId);
-  const [errorMessage, setErrorMessage] = useState(
-    hasValidId ? "" : "Character not found",
-  );
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (!hasValidId) {
-      return;
-    }
-
-    const loadCharacterDetails = async (): Promise<void> => {
-      setIsLoading(true);
-      setErrorMessage("");
-
-      try {
-        const result = await fetchCharacterDetails(detailsIdNumber);
-
-        setCharacter(result);
-        setIsLoading(false);
-      } catch (error) {
-        const message =
-          error instanceof Error
-            ? error.message
-            : "Unknown error occurred while loading details";
-
-        setCharacter(null);
-        setIsLoading(false);
-        setErrorMessage(message);
-      }
-    };
-
-    void loadCharacterDetails();
-  }, [detailsIdNumber, hasValidId]);
+  const characterQuery = useCharacterDetailsQuery(detailsIdNumber, hasValidId);
 
   const handleClose = (): void => {
     navigate({
@@ -55,16 +24,32 @@ export function CharacterDetails(): React.ReactNode {
     });
   };
 
+  const handleRefresh = (): void => {
+    if (!hasValidId) {
+      return;
+    }
+
+    void queryClient.invalidateQueries({
+      queryKey: charactersQueryKeys.detail(detailsIdNumber),
+    });
+  };
+
   const renderContent = (): React.ReactNode => {
-    if (isLoading) {
+    if (!hasValidId) {
+      return <p className="message error-message">Character not found</p>;
+    }
+
+    if (characterQuery.isLoading) {
       return <Loader />;
     }
 
-    if (errorMessage.length > 0) {
-      return <p className="message error-message">{errorMessage}</p>;
+    if (characterQuery.error instanceof Error) {
+      return (
+        <p className="message error-message">{characterQuery.error.message}</p>
+      );
     }
 
-    if (character === null) {
+    if (characterQuery.data === undefined) {
       return null;
     }
 
@@ -72,30 +57,30 @@ export function CharacterDetails(): React.ReactNode {
       <>
         <img
           className="details-panel__image"
-          src={character.image}
-          alt={character.name}
+          src={characterQuery.data.image}
+          alt={characterQuery.data.name}
         />
-        <h2>{character.name}</h2>
+        <h2>{characterQuery.data.name}</h2>
         <dl className="details-panel__list">
           <div>
             <dt>Status</dt>
-            <dd>{character.status}</dd>
+            <dd>{characterQuery.data.status}</dd>
           </div>
           <div>
             <dt>Species</dt>
-            <dd>{character.species}</dd>
+            <dd>{characterQuery.data.species}</dd>
           </div>
           <div>
             <dt>Gender</dt>
-            <dd>{character.gender}</dd>
+            <dd>{characterQuery.data.gender}</dd>
           </div>
           <div>
             <dt>Origin</dt>
-            <dd>{character.origin}</dd>
+            <dd>{characterQuery.data.origin}</dd>
           </div>
           <div>
             <dt>Location</dt>
-            <dd>{character.location}</dd>
+            <dd>{characterQuery.data.location}</dd>
           </div>
         </dl>
       </>
@@ -115,13 +100,24 @@ export function CharacterDetails(): React.ReactNode {
           event.stopPropagation();
         }}
       >
-        <Button
-          className="details-panel__close"
-          aria-label="Close details"
-          onClick={handleClose}
-        >
-          x
-        </Button>
+        <div className="details-panel__actions">
+          <Button
+            type="button"
+            onClick={handleRefresh}
+            disabled={!hasValidId || characterQuery.isFetching}
+          >
+            {characterQuery.isFetching ? "Refreshing..." : "Refresh"}
+          </Button>
+
+          <Button
+            className="details-panel__close"
+            aria-label="Close details"
+            onClick={handleClose}
+          >
+            x
+          </Button>
+        </div>
+
         {renderContent()}
       </aside>
     </section>

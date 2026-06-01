@@ -6,6 +6,11 @@ import type {
 } from "../types/character";
 
 const API_URL = "https://rickandmortyapi.com/api/character/";
+const CHARACTERS_LOAD_ERROR_MESSAGE =
+  "Unable to load characters. Please try again.";
+const CHARACTER_DETAILS_LOAD_ERROR_MESSAGE =
+  "Unable to load character details. Please try again.";
+const CHARACTER_NOT_FOUND_ERROR_MESSAGE = "Character not found.";
 
 const delay = (ms: number): Promise<void> =>
   new Promise((resolve) => {
@@ -33,7 +38,7 @@ const mapCharacterDetails = (
   location: character.location.name,
 });
 
-interface CharactersResult {
+export interface CharactersResult {
   items: CharacterCard[];
   totalPages: number;
 }
@@ -62,7 +67,7 @@ export async function fetchCharacters(
       };
     }
 
-    throw new Error(`Request failed with status ${response.status}`);
+    throw new Error(CHARACTERS_LOAD_ERROR_MESSAGE);
   }
 
   const data: CharacterApiResponse = await response.json();
@@ -81,7 +86,11 @@ export async function fetchCharacterDetails(
   const response = await fetch(`${API_URL}${id}`);
 
   if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
+    if (response.status === 404) {
+      throw new Error(CHARACTER_NOT_FOUND_ERROR_MESSAGE);
+    }
+
+    throw new Error(CHARACTER_DETAILS_LOAD_ERROR_MESSAGE);
   }
 
   const data: CharacterApiItem = await response.json();

@@ -35,10 +35,5 @@ export function Results({
     );
   };
 
-  return (
-    <>
-      <h2>Results</h2>
-      {renderContent()}
-    </>
-  );
+  return <>{renderContent()}</>;
 }

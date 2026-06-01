@@ -19,14 +19,6 @@ const characters = [
 ];
 
 describe("Results", () => {
-  it("renders results heading", () => {
-    render(<Results items={[]} isLoading={false} errorMessage="" />);
-
-    expect(
-      screen.getByRole("heading", { name: /results/i }),
-    ).toBeInTheDocument();
-  });
-
   it("shows no results message when items list is empty", () => {
     render(<Results items={[]} isLoading={false} errorMessage="" />);
 
@@ -44,12 +36,12 @@ describe("Results", () => {
       <Results
         items={[]}
         isLoading={false}
-        errorMessage="Request failed with status 500"
+        errorMessage="Unable to load characters. Please try again."
       />,
     );
 
     expect(
-      screen.getByText(/request failed with status 500/i),
+      screen.getByText(/unable to load characters/i),
     ).toBeInTheDocument();
   });
 

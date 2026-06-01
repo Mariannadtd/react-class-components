@@ -18,6 +18,7 @@ describe("Main", () => {
         <Main
           items={[character]}
           isLoading={false}
+          isRefreshing={false}
           errorMessage=""
           onInitialSearch={vi.fn()}
           onSearchTermChange={vi.fn()}
@@ -25,6 +26,7 @@ describe("Main", () => {
           currentPage={1}
           totalPages={1}
           onPageChange={vi.fn()}
+          onRefresh={vi.fn()}
         />
       </MemoryRouter>,
     );
