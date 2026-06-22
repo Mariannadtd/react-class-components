@@ -11,6 +11,10 @@ node_modules
 dist
 coverage
 dist-ssr
+.next
+out
+.vercel
+*.tsbuildinfo
 *.local
 
 # Editor directories and files

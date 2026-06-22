@@ -1,0 +1,53 @@
+{
+  "Header": {
+    "title": "Character Search",
+    "subtitle": "Search Rick and Morty characters",
+    "home": "Home",
+    "about": "About",
+    "language": "Language",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "Search": {
+    "label": "Search character",
+    "placeholder": "Enter character name",
+    "button": "Search",
+    "results": "Results",
+    "empty": "No results found.",
+    "error": "Unable to load characters. Please try again.",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page}",
+    "select": "Select {name}"
+  },
+  "Details": {
+    "title": "Character details",
+    "close": "Close details",
+    "status": "Status",
+    "species": "Species",
+    "gender": "Gender",
+    "origin": "Origin",
+    "location": "Location",
+    "notFound": "Character not found."
+  },
+  "Selection": {
+    "count": "{count, plural, =1 {1 selected item} other {# selected items}}",
+    "clear": "Unselect all",
+    "download": "Download CSV"
+  },
+  "About": {
+    "title": "About",
+    "description": "Created by Marianna for the RS School React course.",
+    "course": "RS School React course"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "description": "The page you requested does not exist.",
+    "home": "Return home"
+  },
+  "Error": {
+    "title": "Something went wrong",
+    "retry": "Try again"
+  }
+}
